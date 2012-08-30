@@ -1,7 +1,7 @@
 #include "PoombaCompass.h"
 
 const unsigned long int PoombaCompass::BAUD_RATE = 9600;
-
+const unsigned int PoombaCompass::CALIBRATE_DELAY = 450;
 
 const unsigned int PoombaCompass::GET_ANGLE_16 = 0x13;
 
@@ -9,7 +9,8 @@ void PoombaCompass::setup(unsigned long int baudRate) {
   Serial3.begin(baudRate);
 }
 
-int PoombaCompass::getAngle() {
+float PoombaCompass::getAngle() {
+  delay(PoombaCompass::CALIBRATE_DELAY); // Needed to recalibrate the compass
   byte getAngle16Msg [] = {
     PoombaCompass::GET_ANGLE_16
   };
@@ -22,7 +23,7 @@ int PoombaCompass::getAngle() {
   return result / 10;
 }
 
-int PoombaCompass::getDifference(int start, int stop, int direction) {
+float PoombaCompass::getDifference(float start, float stop, int direction) {
   if (direction == 0) {
     if (start <= stop) {
       return stop - start;
